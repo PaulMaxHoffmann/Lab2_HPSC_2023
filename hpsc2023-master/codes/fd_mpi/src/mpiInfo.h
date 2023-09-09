@@ -172,10 +172,10 @@ class mpiInfo
 
   //int MPI_Irecv(void *buf, int count, MPI_Datatype datatype,int source, int tag, MPI_Comm comm, MPI_Request *request)
 	
-  if (nei_n >= 0) { err = MPI_Irecv(phiRecv_n, countx, MPI_DOUBLE, nei_n, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
-  if (nei_s >= 0) { err = MPI_Irecv(phiRecv_s, countx, MPI_DOUBLE, nei_s, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
-  if (nei_e >= 0) { err = MPI_Irecv(phiRecv_e, county, MPI_DOUBLE, nei_e, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
-  if (nei_w >= 0) { err = MPI_Irecv(phiRecv_w, county, MPI_DOUBLE, nei_w, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
+  if (nei_n >= 0)  err = MPI_Irecv(phiRecv_n, countx, MPI_DOUBLE, nei_n, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
+  if (nei_s >= 0)  err = MPI_Irecv(phiRecv_s, countx, MPI_DOUBLE, nei_s, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
+  if (nei_e >= 0)  err = MPI_Irecv(phiRecv_e, county, MPI_DOUBLE, nei_e, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
+  if (nei_w >= 0)  err = MPI_Irecv(phiRecv_w, county, MPI_DOUBLE, nei_w, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
 
 	
 	// (1.4) If new information was received, store it in the candy-coating values
@@ -187,10 +187,10 @@ class mpiInfo
 	
 	// (1.5) Apply exchanged information as BCs
 	
-  if (nei_n >= 0) sLOOP Solution[pid(s, nRealy + 1)] = phiRecv_n[s]; // BCs for north boundary using phiRecv_n
-  if (nei_s >= 0) sLOOP Solution[pid(s, 0)] = phiRecv_s[s]; // BCs for south boundary using phiRecv_s
-  if (nei_e >= 0) tLOOP Solution[pid(nRealx + 1, t)] = phiRecv_e[t]; // BCs for east boundary using phiRecv_e
-  if (nei_w >= 0) tLOOP Solution[pid(0, t)] = phiRecv_w[t]; // BCs for west boundary using phiRecv_w
+  if (nei_n >= 0) sLOOP b[pid(s, nRealy + 1)] = phiRecv_n[s]; // BCs for north boundary using phiRecv_n
+  if (nei_s >= 0) sLOOP b[pid(s, 0)] = phiRecv_s[s]; // BCs for south boundary using phiRecv_s
+  if (nei_e >= 0) tLOOP b[pid(nRealx + 1, t)] = phiRecv_e[t]; // BCs for east boundary using phiRecv_e
+  if (nei_w >= 0) tLOOP b[pid(0, t)] = phiRecv_w[t]; // BCs for west boundary using phiRecv_w
 
   }
   
