@@ -102,7 +102,7 @@ class mpiInfo
       }
     if ( jPE > 0      )
       {
-        nei_s = myPE - nPEx;
+        nei_s = myPE - nPEx; //Use nPEx so that it can be modular 
       }
     if ( iPE < nPEx-1 )
       {
@@ -110,7 +110,7 @@ class mpiInfo
       }
     if ( jPE < nPEy-1 )
       {
-	      nei_n = myPE + nPEx;
+	      nei_n = myPE + nPEx; //Use nPEx so that it can be modular 
       }
 
     countx = nRealx + 2;
@@ -144,20 +144,26 @@ class mpiInfo
 	// (1) Parallel communication on PE Boundaries:   ** See fd.h for tLOOP and sLOOP macros **
 	// ----------------------------------------------
 
-// #define rLOOP  for ( int r = 1 ; r <= nField    ; ++r )
-// #define cLOOP  for ( int c = 1 ; c <= nField    ; ++c )
-// #define iLOOP  for ( int i = 1 ; i <= nRealx    ; ++i )
-// #define jLOOP  for ( int j = 1 ; j <= nRealy    ; ++j )
-// #define sLOOP  for ( int s = 0 ; s <= nRealx+1  ; ++s )
-// #define tLOOP  for ( int t = 0 ; t <= nRealy+1  ; ++t )
+  //Notes for references 
+  // #define rLOOP  for ( int r = 1 ; r <= nField    ; ++r )
+  // #define cLOOP  for ( int c = 1 ; c <= nField    ; ++c )
+  // #define iLOOP  for ( int i = 1 ; i <= nRealx    ; ++i )
+  // #define jLOOP  for ( int j = 1 ; j <= nRealy    ; ++j )
+  // #define sLOOP  for ( int s = 0 ; s <= nRealx+1  ; ++s )
+  // #define tLOOP  for ( int t = 0 ; t <= nRealy+1  ; ++t )
 
+  //
+  // ***
+  //  int pid(int i,int j) { return (i+1) + (j)*(nRealx+2); } 
+  // ***
+  // 
 
 	// (1.1) Put them into communication arrays
 
-  sLOOP phiSend_n[s] = Solution[pid(s, nRealy)]; 
-  sLOOP phiSend_s[s] = Solution[pid(s, 1)];      
-  tLOOP phiSend_w[t] = Solution[pid(1, t)];      
-  tLOOP phiSend_e[t] = Solution[pid(nRealx, t)];
+  sLOOP phiSend_n[s] = Solution[pid(s, nRealy)]; // Left to right on the top row of real value
+  sLOOP phiSend_s[s] = Solution[pid(s, 1)]; // Left to right on the bottom row of real value     
+  tLOOP phiSend_w[t] = Solution[pid(1, t)]; // Bottom to top on the left most column of real value    
+  tLOOP phiSend_e[t] = Solution[pid(nRealx, t)]; //Bottom to top on the right most column of real value 
 
 	// (1.2) Send them to neighboring PEs
 
@@ -180,10 +186,10 @@ class mpiInfo
 	
 	// (1.4) If new information was received, store it in the candy-coating values
 
-  if (nei_n >= 0) sLOOP Solution[pid(s, nRealy + 1)] = phiRecv_n[s];
-  if (nei_s >= 0) sLOOP Solution[pid(s, 0)] = phiRecv_s[s];
-  if (nei_e >= 0) tLOOP Solution[pid(nRealx + 1, t)] = phiRecv_e[t];
-  if (nei_w >= 0) tLOOP Solution[pid(0, t)] = phiRecv_w[t];
+  if (nei_n >= 0) sLOOP Solution[pid(s, nRealy + 1)] = phiRecv_n[s]; // For north boundary using phiRecv_n
+  if (nei_s >= 0) sLOOP Solution[pid(s, 0)] = phiRecv_s[s]; // For south boundary using phiRecv_n
+  if (nei_e >= 0) tLOOP Solution[pid(nRealx + 1, t)] = phiRecv_e[t]; // For east boundary using phiRecv_n
+  if (nei_w >= 0) tLOOP Solution[pid(0, t)] = phiRecv_w[t]; // For west boundary using phiRecv_n
 	
 	// (1.5) Apply exchanged information as BCs
 	
