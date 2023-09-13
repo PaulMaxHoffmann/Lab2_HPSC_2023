@@ -1,4 +1,5 @@
 #set term png
 #set output "plot.png"
+#gnuplot plot_script.gnu
 splot 'F_phi_0.plt' w l , 'F_phi_1.plt' w l , 'F_phi_2.plt' w l , 'F_phi_3.plt' w l
 

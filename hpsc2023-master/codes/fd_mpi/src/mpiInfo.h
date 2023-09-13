@@ -160,10 +160,10 @@ class mpiInfo
 
 	// (1.1) Put them into communication arrays
 
-  sLOOP phiSend_n[s] = Solution[pid(s, nRealy)]; // Left to right on the top row of real value
-  sLOOP phiSend_s[s] = Solution[pid(s, 1)]; // Left to right on the bottom row of real value     
-  tLOOP phiSend_w[t] = Solution[pid(1, t)]; // Bottom to top on the left most column of real value    
-  tLOOP phiSend_e[t] = Solution[pid(nRealx, t)]; //Bottom to top on the right most column of real value 
+  sLOOP phiSend_n[s] = Solution[pid(s, nRealy-1)]; // Left to right on the top row of real value
+  sLOOP phiSend_s[s] = Solution[pid(s, 2)]; // Left to right on the bottom row of real value     
+  tLOOP phiSend_w[t] = Solution[pid(2, t)]; // Bottom to top on the left most column of real value    
+  tLOOP phiSend_e[t] = Solution[pid(nRealx-1, t)]; //Bottom to top on the right most column of real value 
 
 	// (1.2) Send them to neighboring PEs
 
@@ -178,11 +178,10 @@ class mpiInfo
 
   //int MPI_Irecv(void *buf, int count, MPI_Datatype datatype,int source, int tag, MPI_Comm comm, MPI_Request *request)
 	
-  if (nei_n >= 0)  err = MPI_Irecv(phiRecv_n, countx, MPI_DOUBLE, nei_n, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
-  if (nei_s >= 0)  err = MPI_Irecv(phiRecv_s, countx, MPI_DOUBLE, nei_s, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
-  if (nei_e >= 0)  err = MPI_Irecv(phiRecv_e, county, MPI_DOUBLE, nei_e, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
-  if (nei_w >= 0)  err = MPI_Irecv(phiRecv_w, county, MPI_DOUBLE, nei_w, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); 
-
+  if (nei_n >= 0) { err = MPI_Irecv(phiRecv_n, countx, MPI_DOUBLE, nei_n, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
+  if (nei_s >= 0) { err = MPI_Irecv(phiRecv_s, countx, MPI_DOUBLE, nei_s, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
+  if (nei_e >= 0) { err = MPI_Irecv(phiRecv_e, county, MPI_DOUBLE, nei_e, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
+  if (nei_w >= 0) { err = MPI_Irecv(phiRecv_w, county, MPI_DOUBLE, nei_w, tag, MPI_COMM_WORLD, &request); MPI_Wait(&request, &status); }
 	
 	// (1.4) If new information was received, store it in the candy-coating values
 
